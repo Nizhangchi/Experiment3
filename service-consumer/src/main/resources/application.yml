@@ -1,0 +1,62 @@
+server:
+  port: 8081
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka # 必须匹配Eureka端口
+  instance:
+    appname: service-consumer # 确保应用名正确
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+    instances:
+      circuitA:
+        failureRateThreshold: 30
+        slidingWindowType: TIME_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+      circuitB:
+        failureRateThreshold: 50
+        slowCallRateThreshold: 30
+        slowCallDurationThreshold: 2s
+        slidingWindowType: TIME_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+  bulkhead:
+    instances:
+      bulkheadA:
+        maxConcurrentCalls: 10
+        maxWaitDuration: 20ms
+  ratelimiter:
+    configs:
+      default:
+        timeoutDuration: 0
+        limitRefreshPeriod: 2s
+        limitForPeriod: 5
+    instances:
+      rateLimiterA:
+        baseConfig: default
+        registerHealthIndicator: true
+        limitRefreshPeriod: 2s
+        limitForPeriod: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
