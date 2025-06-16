@@ -1,6 +1,6 @@
-server:
-  port: 8081
-
+spring:
+  application:
+    name: service-consumer  # 确保名称与Gateway配置一致
 feign:
   client:
     config:
@@ -13,6 +13,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka # 必须匹配Eureka端口
   instance:
+    prefer-ip-address: true  # 推荐设置为true
     appname: service-consumer # 确保应用名正确
 
 resilience4j:
@@ -59,4 +60,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,info

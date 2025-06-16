@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+eureka:
+  instance:
+    instance-id: business-service-8081  # 唯一标识
